@@ -3,15 +3,15 @@ import morgan from "morgan";
 import cors from "cors";
 
 // Routes
-import entryRoutes from "./routes/entry.routes";
-import personRoutes from "./routes/person.routes";
+import entryRoutes from "./controller/entry.controller";
+import personRoutes from "./controller/person.controller";
 
 const app = express();
 
 const corsOpts = {
-  origin: "*",
-  methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
+  methods: ["GET", "POST"],
+  origin: "*",
 };
 
 app.use(cors(corsOpts));

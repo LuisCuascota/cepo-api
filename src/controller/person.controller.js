@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { methods as personController } from "../controllers/person.controller";
+import { methods as personController } from "../entity/person.entity";
 
 const router = Router();
 
