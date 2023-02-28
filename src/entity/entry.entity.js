@@ -1,30 +1,37 @@
 import { getConnection } from "./database/database";
 import { EntriesCodeEnum } from "../service/shared/entriesCode.enum";
 
-const getEntryOptionList = async (req, res) => {
-  try {
-    const connection = await getConnection();
+const getEntryOptionList = async () => {
+  const connection = await getConnection();
 
-    return await connection.query("SELECT * FROM Entry_type;");
-  } catch (error) {
-    res.status(500);
-    res.send(error.message);
-  }
+  return connection.query("SELECT * FROM Entry_type;");
 };
 
-const getTotalFeeCapitalByAccount = async (req, res) => {
-  try {
-    const { account } = req.params;
-    const connection = await getConnection();
+const getTotalFeeCapitalByAccount = async (account) => {
+  const connection = await getConnection();
 
-    return await connection.query(
-      "SELECT sum(D.value) as total FROM Entry_detail D INNER JOIN Entry E on D.entry_number = E.number WHERE D.type_id= ? and E.account_number= ? ;",
-      [EntriesCodeEnum.FeeCapital, account]
-    );
-  } catch (error) {
-    res.status(500);
-    res.send(error.message);
-  }
+  return connection.query(
+    "SELECT sum(D.value) as total FROM Entry_detail D INNER JOIN Entry E on D.entry_number = E.number WHERE D.type_id= ? and E.account_number= ? ;",
+    [EntriesCodeEnum.FeeCapital, account]
+  );
+};
+
+const getLoanByAccount = async (account) => {
+  const connection = await getConnection();
+
+  return connection.query(
+    "SELECT L.* FROM Loan L WHERE L.account=? AND L.is_end=0",
+    account
+  );
+};
+
+const getLoanDetailByNumber = async (number) => {
+  const connection = await getConnection();
+
+  return connection.query(
+    "SELECT L.* FROM Loan_detail L WHERE L.loan_number=? ORDER BY L.fee_number;",
+    number
+  );
 };
 
 const getEntryCount = async (req, res) => {
@@ -61,6 +68,8 @@ const postNewEntry = async (req, res) => {
 export const methods = {
   getEntryCount,
   getEntryOptionList,
+  getLoanByAccount,
+  getLoanDetailByNumber,
   getTotalFeeCapitalByAccount,
   postNewEntry,
 };

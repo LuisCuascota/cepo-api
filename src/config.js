@@ -6,6 +6,7 @@ export default {
   cepoConfig: {
     feeCapital: 20,
     feePenalty: 1,
+    loanPenaltyPercentage: 0.1,
     startAmount: 100,
     startDate: "2022-07-02",
     strategicFund: 1,
