@@ -1,4 +1,5 @@
 import { methods as entryEntity } from "../entity/entry.entity";
+import { methods as loanEntity } from "../entity/loan.entity";
 import moment from "moment";
 import config from "../config";
 import { EntriesCodeEnum } from "./shared/entriesCode.enum";
@@ -17,7 +18,7 @@ export const getEntryOptionListByAccount = async (req, res) => {
 const calculateTotalContribution = () => {
   const startDate = moment(config.cepoConfig.startDate);
   //TODO: Reducir el month, solo pruebas
-  const currentDate = moment().add(1, "M");
+  const currentDate = moment(); //.add(1, "M");
   const monthsContribution = currentDate.diff(startDate, "months");
 
   return (
@@ -28,14 +29,14 @@ const calculateTotalContribution = () => {
 
 const updateFeeLoanIntoEntries = async (entries, account) => {
   if (account !== "0") {
-    const loanDb = await entryEntity.getLoanByAccount(account);
+    const loanDb = await loanEntity.getLoanByAccount(account);
 
     if (loanDb.length !== 0) {
-      const loanDetailDb = await entryEntity.getLoanDetailByNumber(
+      const loanDetailDb = await loanEntity.getLoanDetailByNumber(
         loanDb[0].number
       );
       //TODO: Reducir el month, solo pruebas
-      const currentDate = moment().add(1, "M");
+      const currentDate = moment(); //.add(1, "M");
       const currentMonth = currentDate.month();
       const currentYear = currentDate.year();
       let loanFee = 0;
