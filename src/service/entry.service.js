@@ -15,10 +15,34 @@ export const getEntryOptionListByAccount = async (req, res) => {
   res.json(entries);
 };
 
+export const saveNewEntry = async (req, res) => {
+  try {
+    await entryEntity.saveEntryHeader(req.body.header);
+    await entryEntity.saveEntryDetail(req.body.detail);
+    await updateLoanPayment(req.body.loanToPay);
+
+    res.json({ message: "OK" });
+  } catch (error) {
+    res.status(500);
+    res.send(error.message);
+  }
+};
+
+const updateLoanPayment = async (loanToPay) => {
+  if (loanToPay && loanToPay.feeToPay.length > 0) {
+    await loanEntity.updateLoanDetail(loanToPay.feeToPay);
+
+    const paid = await loanEntity.getLoanDetailCountPaid(loanToPay.loanNumber);
+
+    if (paid[0].count === loanToPay.term)
+      await loanEntity.updateLoanFinalization(loanToPay.loanNumber);
+  }
+};
+
 const calculateTotalContribution = () => {
   const startDate = moment(config.cepoConfig.startDate);
   //TODO: Reducir el month, solo pruebas
-  const currentDate = moment(); //.add(1, "M");
+  const currentDate = moment().add(1, "M");
   const monthsContribution = currentDate.diff(startDate, "months");
 
   return (
@@ -36,7 +60,7 @@ const updateFeeLoanIntoEntries = async (entries, account) => {
         loanDb[0].number
       );
       //TODO: Reducir el month, solo pruebas
-      const currentDate = moment(); //.add(1, "M");
+      const currentDate = moment().add(1, "M");
       const currentMonth = currentDate.month();
       const currentYear = currentDate.year();
       let loanFee = 0;
@@ -112,6 +136,7 @@ const addFeeLoanValues = (entries, loanFee, loanInterest, loanFeePenalty) => {
     switch (option.id) {
       case EntriesCodeEnum.LoanFee:
         option.value = loanFee;
+        option.showDetails = true;
         break;
       case EntriesCodeEnum.LoanInterest:
         option.value = loanInterest;

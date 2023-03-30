@@ -30,26 +30,24 @@ const getEntryCount = async (req, res) => {
   }
 };
 
-const postNewEntry = async (req, res) => {
-  try {
-    const connection = await getConnection();
+const saveEntryHeader = async (header) => {
+  const connection = await getConnection();
 
-    await connection.query("INSERT INTO Entry SET ?", req.body.header);
+  await connection.query("INSERT INTO Entry SET ?", header);
+};
 
-    req.body.detail.map(async (entryDetail) => {
-      await connection.query("INSERT INTO Entry_detail SET ?", entryDetail);
-    });
+const saveEntryDetail = async (detail) => {
+  const connection = await getConnection();
 
-    res.json({ message: "OK" });
-  } catch (error) {
-    res.status(500);
-    res.send(error.message);
-  }
+  detail.map(async (entryDetail) => {
+    await connection.query("INSERT INTO Entry_detail SET ?", entryDetail);
+  });
 };
 
 export const methods = {
   getEntryCount,
   getEntryOptionList,
   getTotalFeeCapitalByAccount,
-  postNewEntry,
+  saveEntryDetail,
+  saveEntryHeader,
 };
