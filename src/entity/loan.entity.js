@@ -47,10 +47,41 @@ const getLoanDetailCountPaid = async (number) => {
   );
 };
 
+const getLoanCount = async (req, res) => {
+  try {
+    const connection = await getConnection();
+    const result = await connection.query(
+      "SELECT count(e.number)+1 as count FROM Loan e;"
+    );
+
+    res.json(result[0]);
+  } catch (error) {
+    res.status(500);
+    res.send(error.message);
+  }
+};
+
+const saveLoanHeader = async (header) => {
+  const connection = await getConnection();
+
+  await connection.query("INSERT INTO Loan SET ?", header);
+};
+
+const saveLoanDetail = async (detail) => {
+  const connection = await getConnection();
+
+  detail.map(async (loanDetail) => {
+    await connection.query("INSERT INTO Loan_detail SET ?", loanDetail);
+  });
+};
+
 export const methods = {
   getLoanByAccount,
+  getLoanCount,
   getLoanDetailByNumber,
   getLoanDetailCountPaid,
+  saveLoanDetail,
+  saveLoanHeader,
   updateLoanDetail,
   updateLoanFinalization,
 };

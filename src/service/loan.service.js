@@ -19,3 +19,15 @@ export const getLoanByAccount = async (req, res) => {
 
   res.json({});
 };
+
+export const postNewLoan = async (req, res) => {
+  try {
+    await loanEntity.saveLoanHeader(req.body.loan);
+    await loanEntity.saveLoanDetail(req.body.detail);
+
+    res.json({ message: "OK" });
+  } catch (error) {
+    res.status(500);
+    res.send(error.message);
+  }
+};

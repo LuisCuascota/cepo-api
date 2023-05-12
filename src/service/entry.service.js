@@ -42,7 +42,7 @@ const updateLoanPayment = async (loanToPay) => {
 const calculateTotalContribution = () => {
   const startDate = moment(config.cepoConfig.startDate);
   //TODO: Reducir el month, solo pruebas
-  const currentDate = moment().add(1, "M");
+  const currentDate = moment(); //.add(1, "M");
   const monthsContribution = currentDate.diff(startDate, "months");
 
   return (
@@ -60,7 +60,7 @@ const updateFeeLoanIntoEntries = async (entries, account) => {
         loanDb[0].number
       );
       //TODO: Reducir el month, solo pruebas
-      const currentDate = moment().add(1, "M");
+      const currentDate = moment(); //.add(1, "M");
       const currentMonth = currentDate.month();
       const currentYear = currentDate.year();
       let loanFee = 0;
