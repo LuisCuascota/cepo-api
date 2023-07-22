@@ -28,6 +28,18 @@ export const saveNewEntry = async (req, res) => {
   }
 };
 
+export const getEntryList = async (req, res) => {
+  const entries = await entryEntity.getEntryListPaginated(req);
+
+  res.json(entries);
+};
+
+export const getEntryDetailByNumber = async (req, res) => {
+  const entry = await entryEntity.getEntryDetailByNumber(req);
+
+  res.json(entry);
+};
+
 const updateLoanPayment = async (loanToPay) => {
   if (loanToPay && loanToPay.feeToPay.length > 0) {
     await loanEntity.updateLoanDetail(loanToPay.feeToPay);

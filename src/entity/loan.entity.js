@@ -23,8 +23,8 @@ const updateLoanDetail = async (loanDetail) => {
 
   loanDetail.map(async (detail) => {
     await connection.query(
-      "UPDATE Loan_detail D SET D.balance_after_pay = ?, D.is_paid = 1, D.entry_number = ? WHERE D.id = ?",
-      [detail.balance, detail.entry, detail.id]
+      "UPDATE Loan_detail D SET D.is_paid = 1, D.entry_number = ? WHERE D.id = ?",
+      [detail.entry, detail.id]
     );
   });
 };
